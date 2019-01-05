@@ -9,13 +9,14 @@ var favIconHtml = '<link rel="icon" type="image/png" href="./favicon-32x32.png" 
 
 var swaggerInit
 
-var generateHTML = function (swaggerDoc, opts, options, customCss, customfavIcon, swaggerUrl, customeSiteTitle) {
+var generateHTML = function (swaggerDoc, opts, options, customCss, customCssFile, customfavIcon, swaggerUrl, customeSiteTitle) {
   var isExplorer
   var customJs
   var swaggerUrls
   if (opts && typeof opts === 'object') {
     options = opts.swaggerOptions
     customCss = opts.customCss
+    customCssFile = opts.customCssFile
     customJs = opts.customJs
     customfavIcon = opts.customfavIcon
     swaggerUrl = opts.swaggerUrl
@@ -40,7 +41,8 @@ var generateHTML = function (swaggerDoc, opts, options, customCss, customfavIcon
 
     var favIconString = customfavIcon ? '<link rel="icon" href="' + customfavIcon + '" />' : favIconHtml;
     var htmlWithCustomCss = html.toString().replace('<% customCss %>', customCss);
-    var htmlWithFavIcon = htmlWithCustomCss.replace('<% favIconString %>', favIconString);
+    var htmlWithCustomCssFile = htmlWithCustomCss.replace('<% customCssFile %>', customCssFile ? `<link rel="stylesheet" type="text/css" href="${customCssFile}">` : '');
+    var htmlWithFavIcon = htmlWithCustomCssFile.replace('<% favIconString %>', favIconString);
     var htmlWithCustomJs = htmlWithFavIcon.replace('<% customJs %>', customJs ? `<script src="${customJs}"></script>` : '');
 
     var initOptions = {
@@ -54,8 +56,8 @@ var generateHTML = function (swaggerDoc, opts, options, customCss, customfavIcon
     return htmlWithCustomJs.replace('<% title %>', customeSiteTitle)
 }
 
-var setup = function (swaggerDoc, opts, options, customCss, customfavIcon, swaggerUrl, customeSiteTitle) {
-    var htmlWithOptions = generateHTML(swaggerDoc, opts, options, customCss, customfavIcon, swaggerUrl, customeSiteTitle)
+var setup = function (swaggerDoc, opts, options, customCss, customCssFile, customfavIcon, swaggerUrl, customeSiteTitle) {
+    var htmlWithOptions = generateHTML(swaggerDoc, opts, options, customCss, customCssFile, customfavIcon, swaggerUrl, customeSiteTitle)
     return function (req, res) { res.send(htmlWithOptions) };
 };
 
